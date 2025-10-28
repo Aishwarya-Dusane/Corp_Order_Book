@@ -13,10 +13,6 @@ interface SellOrdersTableProps {
 }
 
 const SellOrdersTable = ({ sellOrders }: SellOrdersTableProps) => {
-  const sortedOrders = [...sellOrders].sort(
-    (a, b) => new Date(a.submitted).getTime() - new Date(b.submitted).getTime()
-  );
-
   return (
     <TableWrapper>
       <Title>{SELL_ORDERS.TITLE}</Title>
@@ -29,13 +25,23 @@ const SellOrdersTable = ({ sellOrders }: SellOrdersTableProps) => {
           </tr>
         </thead>
         <tbody>
-          {sortedOrders.map((order, index) => (
-            <tr key={index}>
-              <Td>{order.company}</Td>
-              <Td>{order.quantity}</Td>
-              <Td>{new Date(order.submitted).toLocaleString()}</Td>
+          {sellOrders.length > 0 ? (
+            sellOrders.map((order) => (
+              <tr key={order.submitted}>
+                <Td>{order.company}</Td>
+                <Td>{order.quantity}</Td>
+                <Td>
+                  {order.submitted
+                    ? new Date(order.submitted).toLocaleString()
+                    : "N/A"}
+                </Td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <Td colSpan={3}>No sell orders available</Td>
             </tr>
-          ))}
+          )}
         </tbody>
       </Table>
     </TableWrapper>
