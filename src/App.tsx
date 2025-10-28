@@ -1,35 +1,55 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import BuyOrderForm from "./components/BuyOrderForm";
+import SellOrdersTable from "./components/SellOrdersTable";
+import type { SellOrder } from "./types/types";
+import { AppContainer } from "./styles/App.styles";
+import {
+  APP_CONSTANTS,
+  INITIAL_SELL_ORDERS,
+  MESSAGE_CONSTANTS,
+} from "./constants/appConstants";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [sellOrders, setSellOrders] =
+    useState<SellOrder[]>(INITIAL_SELL_ORDERS);
+
+  const handleBuyOrder = (quantity: number): boolean => {
+    const totalAvailable = sellOrders.reduce(
+      (sum, order) => sum + order.quantity,
+      0
+    );
+
+    if (quantity > totalAvailable) {
+      alert(MESSAGE_CONSTANTS.ERROR.INSUFFICIENT_SHARES(totalAvailable));
+      return false;
+    }
+    let remaining = quantity;
+    const updatedOrders = sellOrders.map((order) => {
+      if (remaining === 0) return order;
+
+      if (order.quantity >= remaining) {
+        const newQuantity = order.quantity - remaining;
+        remaining = 0;
+        return { ...order, quantity: newQuantity };
+      } else {
+        remaining -= order.quantity;
+        return { ...order, quantity: 0 };
+      }
+    });
+
+    setSellOrders(updatedOrders);
+    return true;
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <AppContainer>
+      <BuyOrderForm
+        pricePerUnit={APP_CONSTANTS.PRICE_PER_UNIT}
+        onBuyOrder={handleBuyOrder}
+      />
+      <SellOrdersTable sellOrders={sellOrders} />
+    </AppContainer>
+  );
 }
 
-export default App
+export default App;
