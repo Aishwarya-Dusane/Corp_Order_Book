@@ -6,9 +6,12 @@ import {
   InputGroup,
   RadioGroup,
   Button,
+  InputRow,
+  StyledLabel,
+  StyledInput,
   Message,
 } from "../styles/BuyOrderForm.styles";
-import type { BuyMode, BuyOrderFormProps } from "../types/types";
+import type { BuyMode } from "../types/types";
 import {
   APP_NAME,
   BUY_ORDER,
@@ -17,7 +20,8 @@ import {
   BUY_MODES,
 } from "../constants/buyOrderConstants";
 
-interface ExtendedBuyOrderFormProps extends BuyOrderFormProps {
+// this is intended to be extended in future to handle the buy order logic as it is not mentioned in the Assessment Document so not enabled the logic.
+interface ExtendedBuyOrderFormProps {
   onBuyOrder: (quantity: number) => boolean;
 }
 
@@ -25,10 +29,12 @@ const BuyOrderForm = ({}: ExtendedBuyOrderFormProps) => {
   const [mode, setMode] = useState<BuyMode>(BUY_MODES.QUANTITY);
   const [value, setValue] = useState<number | "">("");
   const [message, setMessage] = useState("");
+  const [isValid, setIsValid] = useState(false);
 
   useEffect(() => {
     setValue("");
     setMessage("");
+    setIsValid(false);
   }, [mode]);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -36,10 +42,34 @@ const BuyOrderForm = ({}: ExtendedBuyOrderFormProps) => {
 
     if (value === "" || value <= 0) {
       setMessage(MESSAGES.INVALID_VALUE);
+      setIsValid(false);
       return;
-    } else {
-      setMessage(MESSAGES.SUCCESS);
     }
+
+    setMessage(MESSAGES.SUCCESS);
+    setIsValid(true);
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    const numVal = Number(val);
+
+    if (val === "") {
+      setValue("");
+      setMessage("");
+      setIsValid(false);
+      return;
+    }
+
+    if (numVal <= 0) {
+      setMessage("Value must be greater than 0");
+      setIsValid(false);
+    } else {
+      setMessage("");
+      setIsValid(true);
+    }
+
+    setValue(numVal);
   };
 
   return (
@@ -75,10 +105,12 @@ const BuyOrderForm = ({}: ExtendedBuyOrderFormProps) => {
                 {BUY_ORDER.TOTAL_COST_LABEL}
               </label>
             </RadioGroup>
-
-            <label>
-              {BUY_ORDER.VALUE_LABEL}{" "}
-              <input
+            <InputRow>
+              <StyledLabel htmlFor="buy-value-input">
+                {BUY_ORDER.VALUE_LABEL}
+              </StyledLabel>
+              <StyledInput
+                id="buy-value-input"
                 type="number"
                 placeholder={
                   mode === BUY_MODES.QUANTITY
@@ -86,19 +118,20 @@ const BuyOrderForm = ({}: ExtendedBuyOrderFormProps) => {
                     : PLACEHOLDERS.TOTAL
                 }
                 value={value}
-                onChange={(e) => {
-                  const val = e.target.value;
-                  setValue(val === "" ? "" : Number(val));
-                  setMessage("");
-                }}
+                onChange={handleChange}
               />
-            </label>
+            </InputRow>
+
+            {message && (
+              <Message color={isValid ? "green" : "red"}>{message}</Message>
+            )}
           </InputGroup>
 
-          <Button type="submit">{BUY_ORDER.BUTTON_TEXT}</Button>
+          {/* Submit enabled only when value > 0 */}
+          <Button type="submit" disabled={!isValid}>
+            {BUY_ORDER.BUTTON_TEXT}
+          </Button>
         </form>
-
-        {message && <Message>{message}</Message>}
       </FormWrapper>
     </>
   );
