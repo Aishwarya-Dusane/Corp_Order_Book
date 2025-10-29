@@ -6,7 +6,7 @@
     "useDefineForClassFields": true,
     "lib": ["ES2022", "DOM", "DOM.Iterable"], //Includes modern JavaScript features &browser APIs (DOM, DOM.Iterable) in type checking.
     "module": "ESNext", //Uses the latest ECMAScript module syntax for imports/exports.
-    "types": ["vite/client", "cypress", "node"], //Loads type definitions for Vite, Cypress, and Node.js so TypeScript recognizes their globals.
+    "types": ["vite/client", "node"], //Loads type definitions for Vite, Cypress, and Node.js so TypeScript recognizes their globals.
     "skipLibCheck": true, //Skips type checking of declaration files (.d.ts) to speed up compilation.
 
     /* Bundler mode */
@@ -26,5 +26,5 @@
     "noFallthroughCasesInSwitch": true, //Prevents fallthrough between switch cases.
     "noUncheckedSideEffectImports": true //Errors on imports that may have side effects that are not checked.
   },
-  "include": ["src", "vite.config.ts", "cypress/**/*.ts"]
+  "include": ["src", "vite.config.ts"]  // Include source files and Vite config in the TypeScript project.
 }

@@ -1,0 +1,22 @@
+{
+  "root": [
+    "./src/app.tsx",
+    "./src/index.tsx",
+    "./src/components/buyorderform.tsx",
+    "./src/components/sellorderstable.tsx",
+    "./src/constants/appconstants.ts",
+    "./src/constants/buyorderconstants.ts",
+    "./src/constants/sellorderconstants.ts",
+    "./src/styles/app.styles.ts",
+    "./src/styles/buyorderform.styles.ts",
+    "./src/styles/sellorderstable.styles.ts",
+    "./src/types/types.ts",
+    "./vite.config.ts",
+    "./cypress/e2e/app.cy.ts",
+    "./cypress/e2e/buyordervalidation.cy.ts",
+    "./cypress/e2e/sellordervalidation.cy.ts",
+    "./cypress/support/e2e.ts"
+  ],
+  "errors": true,
+  "version": "5.9.3"
+}
