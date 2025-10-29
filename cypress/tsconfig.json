@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "ES2022", // Compiles TypeScript to modern ES2022 JavaScript syntax.
     "lib": ["esnext", "dom"], // Includes latest JavaScript features and browser APIs.
-    "types": ["cypress"], // Loads Cypress type definitions for test files.
+    "types": ["cypress", "mocha"], // Loads Cypress type definitions for test files.
     "isolatedModules": false // Allows multiple files to share types without forcing module isolation.
   },
   "include": ["./**/*.ts", "./**/*.tsx"] // Includes all TypeScript and TSX files in the project for compilation.
