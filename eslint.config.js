@@ -1,38 +1,28 @@
-import js from "@eslint/js";
-import globals from "globals";
-import reactHooks from "eslint-plugin-react-hooks";
-import reactRefresh from "eslint-plugin-react-refresh";
-import tseslint from "typescript-eslint";
-import cypress from "eslint-plugin-cypress";
-import { defineConfig, globalIgnores } from "eslint/config";
+import js from "@eslint/js"; // Imports ESLint’s built-in JavaScript rules and presets.
+import tseslint from "typescript-eslint"; // Imports TypeScript-specific ESLint rules and parser.
+import react from "eslint-plugin-react"; // Imports React linting rules for JSX and components.
+import cypress from "eslint-plugin-cypress"; // Imports Cypress plugin for end-to-end test linting.
 
-export default defineConfig([
-  // Ignore the dist folder globally
-  globalIgnores(["dist"]),
-
+export default [
+  js.configs.recommended, // Adds recommended JavaScript linting configurations.
+  ...tseslint.configs.recommended, // Adds recommended TypeScript linting configurations.
   {
-    files: ["**/*.{ts,tsx}"],
-    extends: [
-      js.configs.recommended, // Core JavaScript best practices
-      tseslint.configs.recommended, // TypeScript-specific linting rules
-      reactHooks.configs["recommended-latest"], // Prevent incorrect React Hook usage
-      reactRefresh.configs.vite, // Ensures safe usage with Vite's hot reload
-    ],
-    languageOptions: {
-      ecmaVersion: 2020, // Use modern ECMAScript 2020 features
-      globals: globals.browser, // Provides browser globals (e.g., window, document)
+    plugins: {
+      react, // Registers React plugin for JSX rule checks.
+      cypress, // Registers Cypress plugin for test file rules.
     },
-  },
-
-  {
-    files: ["cypress/**/*.ts", "cypress/**/*.js"], // Apply only to Cypress test files
-    plugins: { cypress },
-    extends: ["plugin:cypress/recommended"], // Enables Cypress rules
+    files: ["**/*.{js,jsx,ts,tsx}"], // Applies to all JavaScript and TypeScript source files.
     languageOptions: {
-      globals: {
-        ...globals.browser, // Browser globals
-        ...globals.mocha, // Adds `describe`, `it`, etc. for Cypress tests
+      parserOptions: {
+        ecmaFeatures: { jsx: true }, // Enables JSX syntax parsing for React files.
       },
     },
+    rules: {
+      "react/react-in-jsx-scope": "off", // Disables the old rule requiring React to be imported in JSX.
+    },
   },
-]);
+  {
+    files: ["cypress/**/*.ts", "cypress/**/*.js"], // Targets only Cypress test files.
+    ...cypress.configs.recommended, // Applies Cypress-specific recommended linting rules.
+  },
+];

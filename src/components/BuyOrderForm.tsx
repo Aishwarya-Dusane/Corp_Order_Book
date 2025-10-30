@@ -25,18 +25,20 @@ interface ExtendedBuyOrderFormProps {
   onBuyOrder: (quantity: number) => boolean;
 }
 
-const BuyOrderForm = ({}: ExtendedBuyOrderFormProps) => {
+const BuyOrderForm = ({onBuyOrder}: ExtendedBuyOrderFormProps) => {
   const [mode, setMode] = useState<BuyMode>(BUY_MODES.QUANTITY);
   const [value, setValue] = useState<number | "">("");
   const [message, setMessage] = useState("");
   const [isValid, setIsValid] = useState(false);
 
+  // Reset form when mode changes
   useEffect(() => {
     setValue("");
     setMessage("");
     setIsValid(false);
   }, [mode]);
 
+  // Handle form submission for buy order
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -45,11 +47,12 @@ const BuyOrderForm = ({}: ExtendedBuyOrderFormProps) => {
       setIsValid(false);
       return;
     }
-
-    setMessage(MESSAGES.SUCCESS);
+    onBuyOrder(value);
+    // setMessage(MESSAGES.SUCCESS);
     setIsValid(true);
   };
 
+  // Handle input value change and validation
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
     const numVal = Number(val);

@@ -9,7 +9,7 @@ import {
 } from "./constants/appConstants";
 
 function App() {
-  // Memoize sorted initial sell orders
+  // Memoize sorted initial sell orders in ascending order of submission time
   const sortedInitialOrders = useMemo(() => {
     return [...INITIAL_SELL_ORDERS].sort(
       (a, b) =>
