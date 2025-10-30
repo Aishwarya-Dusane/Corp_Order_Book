@@ -4,6 +4,7 @@ import react from "eslint-plugin-react"; // Imports React linting rules for JSX 
 import cypress from "eslint-plugin-cypress"; // Imports Cypress plugin for end-to-end test linting.
 
 export default [
+  {ignores: ["dist/**", "node_modules/**"]},// Ignores build and dependency directories.
   js.configs.recommended, // Adds recommended JavaScript linting configurations.
   ...tseslint.configs.recommended, // Adds recommended TypeScript linting configurations.
   {
